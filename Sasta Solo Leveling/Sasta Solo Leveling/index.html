@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <title>Hunter Status | Solo Leveling Fitness</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;700;800&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#0a0f1c" />
+</head>
+<body>
+    <div id="background">
+        <div class="mist layer-1"></div>
+        <div class="mist layer-2"></div>
+        <div class="runes"></div>
+    </div>
+
+    <header class="hud">
+        <div class="brand">
+            <span class="glyph">◆</span>
+            <h1>Hunter Status</h1>
+            <span class="glyph">◆</span>
+        </div>
+        <div class="meta">
+            <div class="level">Level <span id="level-value">1</span></div>
+            <div class="xp-bar">
+                <div class="xp-bar-fill" id="xp-fill" style="width: 0%"></div>
+                <div class="xp-label" id="xp-label">0 / 100 XP</div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tabbar" aria-label="Primary">
+        <button class="tab" data-target="onboarding">Start</button>
+        <button class="tab" data-target="status">Status</button>
+        <button class="tab" data-target="workouts">Workouts</button>
+        <button class="tab" data-target="quests">Quests</button>
+        <button class="tab" data-target="inventory">Inventory</button>
+        <button class="tab" data-target="leaderboard">Leaders</button>
+    </nav>
+
+    <main class="views">
+        <section class="view onboarding panel" data-view="onboarding" aria-labelledby="onboard-title">
+            <div class="onboard-screen" id="onboard-screen-selected">
+                <h2 id="onboard-title" class="panel-title">You Have Been Selected</h2>
+                <p class="onboard-copy">A system has chosen you. Your fate diverges here.</p>
+                <div class="onboard-actions">
+                    <button id="onboard-continue" class="btn glow">Continue</button>
+                </div>
+            </div>
+            <div class="onboard-screen hidden" id="onboard-screen-choice">
+                <h2 class="panel-title">Do You Want To Play This Game?</h2>
+                <p class="onboard-copy">Accept, and begin your ascent. Refuse, and accept the consequences.</p>
+                <div class="onboard-actions split">
+                    <button id="onboard-yes" class="btn glow">Yes</button>
+                    <button id="onboard-no" class="btn subtle">No</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="view panel status" data-view="status" aria-labelledby="status-title">
+            <h2 id="status-title" class="panel-title">Attributes</h2>
+            <div class="stats">
+                <div class="stat"><span>Strength</span><div class="bar"><div id="stat-str" class="bar-fill"></div></div><span id="stat-str-val" class="stat-val">5</span></div>
+                <div class="stat"><span>Stamina</span><div class="bar"><div id="stat-sta" class="bar-fill"></div></div><span id="stat-sta-val" class="stat-val">5</span></div>
+                <div class="stat"><span>Agility</span><div class="bar"><div id="stat-agi" class="bar-fill"></div></div><span id="stat-agi-val" class="stat-val">5</span></div>
+                <div class="stat"><span>Intelligence</span><div class="bar"><div id="stat-int" class="bar-fill"></div></div><span id="stat-int-val" class="stat-val">5</span></div>
+            </div>
+            <div class="titles">
+                <div class="current-title">Title: <span id="current-title">Novice Hunter</span></div>
+                <div class="badges" id="badges"></div>
+            </div>
+        </section>
+
+        <section class="view panel workouts" data-view="workouts" aria-labelledby="workouts-title">
+            <h2 id="workouts-title" class="panel-title">Log Workout</h2>
+            
+            <!-- Pose Detection Elements -->
+            <div class="pose-detection hidden" id="pose-detection">
+                <div class="camera-controls">
+                    <button id="start-camera" class="btn glow">Start Camera</button>
+                    <button id="stop-camera" class="btn subtle hidden">Stop Camera</button>
+                    <button id="reset-reps" class="btn subtle">Reset Reps</button>
+                </div>
+                <div class="camera-container">
+                    <video class="input_video" autoplay muted playsinline></video>
+                    <canvas class="output_canvas"></canvas>
+                </div>
+                <div class="rep-counter">
+                    <div id="counter">Reps: 0</div>
+                    <div id="session-xp">Session XP: 0</div>
+                </div>
+                <div class="auto-log">
+                    <button id="auto-log-btn" class="btn glow">Auto-Log Session</button>
+                </div>
+            </div>
+            
+            <form id="workout-form" class="form">
+                <label>
+                    Type
+                    <select id="workout-type">
+                        <option value="pushups">Push-ups</option>
+                        <option value="squats">Squats</option>
+                        <option value="running">Running (km)</option>
+                        <option value="plank">Plank (minutes)</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </label>
+                <label>
+                    Amount
+                    <input id="workout-amount" type="number" min="1" value="10" />
+                </label>
+                <label id="custom-label" class="hidden">
+                    Custom Name
+                    <input id="workout-custom" type="text" maxlength="24" placeholder="e.g. Burpees" />
+                </label>
+                <button type="submit" class="btn glow">Add XP</button>
+            </form>
+            <div class="recent-logs">
+                <h3>Recent Activity</h3>
+                <ul id="logs"></ul>
+            </div>
+        </section>
+
+        <section class="view panel quests" data-view="quests" aria-labelledby="quests-title">
+            <h2 id="quests-title" class="panel-title">Daily Quests</h2>
+            <ul id="quest-list" class="quest-list"></ul>
+            <div class="quest-actions">
+                <button id="reset-quests" class="btn subtle">Refresh Daily</button>
+            </div>
+        </section>
+
+        <section class="view panel inventory" data-view="inventory" aria-labelledby="inventory-title">
+            <h2 id="inventory-title" class="panel-title">Inventory</h2>
+            <div id="inventory" class="inventory-grid"></div>
+        </section>
+
+        <section class="view panel leaderboard" data-view="leaderboard" aria-labelledby="leaderboard-title">
+            <h2 id="leaderboard-title" class="panel-title">Leaderboard</h2>
+            <form id="friend-form" class="form inline">
+                <input id="friend-name" type="text" placeholder="Friend name" maxlength="24" />
+                <input id="friend-level" type="number" min="1" value="1" />
+                <button class="btn">Add</button>
+            </form>
+            <ol id="leaderboard-list" class="leaderboard-list"></ol>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <button id="reset-all" class="btn subtle">Reset Profile</button>
+    </footer>
+
+    <div id="popup" class="popup hidden" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
